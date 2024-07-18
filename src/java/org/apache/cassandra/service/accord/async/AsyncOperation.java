@@ -262,9 +262,8 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
                     }
                 }
 
-                safeStore.postExecute(context.commands, context.timestampsForKey, context.commandsForKey, context.commandsForRanges);
-                context.releaseResources(commandStore);
                 commandStore.completeOperation(safeStore);
+                context.releaseResources(commandStore);
                 if (diffs != null)
                 {
                     state(COMPLETING);
@@ -316,6 +315,12 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
     {
         Invariants.checkState(this.callback == null);
         this.callback = callback;
+        if (commandStore.inStore())
+        {
+            state(LOADING);
+            if (!loader.load(context, this::onLoaded))
+                return;
+        }
         commandStore.executor().execute(this);
     }
 

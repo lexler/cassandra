@@ -32,16 +32,20 @@ import com.google.common.collect.Iterables;
 import org.apache.cassandra.service.accord.*;
 import org.apache.cassandra.service.accord.api.AccordRoutingKey;
 import org.apache.cassandra.service.accord.api.PartitionKey;
+import org.apache.cassandra.utils.NoSpamLogger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class AsyncLoader
 {
     private static final Logger logger = LoggerFactory.getLogger(AsyncLoader.class);
+    private static final NoSpamLogger noSpamLogger = NoSpamLogger.getLogger(logger, 1L, TimeUnit.MINUTES);
 
     enum State
     {
@@ -85,6 +89,7 @@ public class AsyncLoader
         S safeRef = cache.acquire(key);
         if (context.putIfAbsent(key, safeRef) != null)
         {
+            noSpamLogger.warn("Context {} contained key {} more than once", context, key);
             cache.release(safeRef);
             return;
         }

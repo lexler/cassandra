@@ -209,7 +209,7 @@ public class AccordCommandStore extends CommandStore implements CacheSize
         commandCache =
             stateCache.instance(TxnId.class,
                                 AccordSafeCommand.class,
-                                AccordSafeCommand::new,
+                                AccordSafeCommand.safeRefFactory(),
                                 this::loadCommand,
                                 this::appendToKeyspace,
                                 this::validateCommand,

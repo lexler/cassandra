@@ -19,6 +19,7 @@
 package org.apache.cassandra.service.accord;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -27,7 +28,11 @@ import accord.local.Command.TransientListener;
 import accord.local.Listeners;
 import accord.local.SafeCommand;
 import accord.primitives.TxnId;
+import accord.utils.Invariants;
 import org.apache.cassandra.utils.concurrent.Ref;
+
+import static accord.utils.Invariants.Paranoia.LINEAR;
+import static accord.utils.Invariants.ParanoiaCostFactor.HIGH;
 
 public class AccordSafeCommand extends SafeCommand implements AccordSafeState<TxnId, Command>
 {
@@ -166,5 +171,10 @@ public class AccordSafeCommand extends SafeCommand implements AccordSafeState<Tx
     {
         checkNotInvalidated();
         return global.listeners();
+    }
+
+    public static Function<AccordCachingState<TxnId, Command>, AccordSafeCommand> safeRefFactory()
+    {
+        return Invariants.testParanoia(LINEAR, LINEAR, HIGH) ? DebugAccordSafeCommand::new : AccordSafeCommand::new;
     }
 }

@@ -226,7 +226,8 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
         finish(null, throwable);
     }
 
-    protected void runInternal()
+    // return true iff ready to run
+    protected boolean runInternal(boolean loadOnly)
     {
         switch (state)
         {
@@ -235,8 +236,10 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
                 state(LOADING);
             case LOADING:
                 if (!loader.load(context, this::onLoaded))
-                    return;
+                    return false;
                 state(PREPARING);
+                if (loadOnly)
+                    return true;
             case PREPARING:
                 safeStore = commandStore.beginOperation(preLoadContext, context.commands, context.timestampsForKey, context.commandsForKey, context.commandsForRanges);
                 state(RUNNING);
@@ -268,7 +271,7 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
                 {
                     state(COMPLETING);
                     this.commandStore.appendCommands(diffs, sanityCheck, () -> finish(result, null));
-                    return;
+                    return false;
                 }
 
                 state(COMPLETING);
@@ -278,6 +281,8 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
             case FAILED:
                 break;
         }
+
+        return false;
     }
 
     @Override
@@ -291,7 +296,7 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
             commandStore.setCurrentOperation(this);
             try
             {
-                runInternal();
+                runInternal(false);
             }
             catch (Throwable t)
             {
@@ -310,18 +315,28 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
         }
     }
 
+    private boolean preRun()
+    {
+        commandStore.checkInStoreThread();
+        try
+        {
+            return runInternal(true);
+        }
+        catch (Throwable t)
+        {
+            logger.error(String.format("Operation %s failed", this), t);
+            fail(t);
+            return false;
+        }
+    }
+
     @Override
     public void start(BiConsumer<? super R, Throwable> callback)
     {
         Invariants.checkState(this.callback == null);
         this.callback = callback;
-        if (commandStore.inStore())
-        {
-            state(LOADING);
-            if (!loader.load(context, this::onLoaded))
-                return;
-        }
-        commandStore.executor().execute(this);
+        if (!commandStore.inStore() || preRun())
+            commandStore.executor().execute(this);
     }
 
     static class ForFunction<R> extends AsyncOperation<R>

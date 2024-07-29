@@ -37,33 +37,6 @@ import org.apache.cassandra.utils.vint.VIntCoding;
 
 public class WaitingOnSerializer
 {
-    public static void serialize(TxnId txnId, WaitingOn waitingOn, DataOutputPlus out) throws IOException
-    {
-        int keyCount = waitingOn.keys.size();
-        int txnIdCount = waitingOn.txnIdCount();
-        int waitingOnLength = (txnIdCount + keyCount + 63) / 64;
-        serialize(waitingOnLength, waitingOn.waitingOn, out);
-        if (txnId.domain() == Routable.Domain.Range)
-        {
-            int appliedOrInvalidatedLength = (txnIdCount + 63) / 64;
-            serialize(appliedOrInvalidatedLength, waitingOn.appliedOrInvalidated, out);
-        }
-    }
-
-    public static WaitingOn deserialize(TxnId txnId, Keys keys, RangeDeps directRangeDeps, KeyDeps directKeyDeps, DataInputPlus in) throws IOException
-    {
-        int txnIdCount = directRangeDeps.txnIdCount() + directKeyDeps.txnIdCount();
-        int waitingOnLength = (txnIdCount + keys.size() + 63) / 64;
-        ImmutableBitSet waitingOn = deserialize(waitingOnLength, in);
-        ImmutableBitSet appliedOrInvalidated = null;
-        if (txnId.domain() == Routable.Domain.Range)
-        {
-            int appliedOrInvalidatedLength = (txnIdCount + 63) / 64;
-            appliedOrInvalidated = deserialize(appliedOrInvalidatedLength, in);
-        }
-        return new WaitingOn(keys, directRangeDeps, directKeyDeps, waitingOn, appliedOrInvalidated);
-    }
-
     public static long serializedSize(WaitingOn waitingOn)
     {
         int keyCount = waitingOn.keys.size();
@@ -79,26 +52,10 @@ public class WaitingOnSerializer
         return size + serializedSize(appliedOrInvalidatedLength, waitingOn.appliedOrInvalidated);
     }
 
-    private static void serialize(int length, SimpleBitSet write, DataOutputPlus out) throws IOException
-    {
-        long[] bits = SimpleBitSet.SerializationSupport.getArray(write);
-        Invariants.checkState(length == bits.length);
-        for (long v : bits)
-            out.writeLong(v);
-    }
-
-    private static ImmutableBitSet deserialize(int length, DataInputPlus in) throws IOException
-    {
-        long[] bits = new long[length];
-        for (int i = 0 ; i < length ; ++i)
-            bits[i] = in.readLong();
-        return ImmutableBitSet.SerializationSupport.construct(bits);
-    }
-
     public static long serializedSize(int length, SimpleBitSet write)
     {
         long[] bits = SimpleBitSet.SerializationSupport.getArray(write);
-        Invariants.checkState(length == bits.length);
+        Invariants.checkState(length == bits.length, "Expected length %d != %d", length, bits.length);
         return (long) TypeSizes.LONG_SIZE * length;
     }
 

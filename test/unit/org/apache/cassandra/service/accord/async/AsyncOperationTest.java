@@ -103,11 +103,6 @@ public class AsyncOperationTest
     private static final Logger logger = LoggerFactory.getLogger(AsyncOperationTest.class);
     private static final AtomicLong clock = new AtomicLong(0);
 
-    static
-    {
-        CassandraRelevantProperties.TEST_ACCORD_STORE_THREAD_CHECKS_ENABLED.setBoolean(false);
-    }
-
     @BeforeClass
     public static void beforeClass() throws Throwable
     {

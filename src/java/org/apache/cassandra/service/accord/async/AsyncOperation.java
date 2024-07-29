@@ -324,7 +324,7 @@ public abstract class AsyncOperation<R> extends AsyncChains.Head<R> implements R
         }
         catch (Throwable t)
         {
-            logger.error(String.format("Operation %s failed", this), t);
+            logger.error("Operation {} failed", this, t);
             fail(t);
             return false;
         }

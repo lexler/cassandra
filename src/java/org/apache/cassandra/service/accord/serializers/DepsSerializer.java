@@ -46,7 +46,7 @@ import static org.apache.cassandra.db.TypeSizes.sizeofUnsignedVInt;
 
 public abstract class DepsSerializer<D extends Deps> extends IVersionedWithKeysSerializer.AbstractWithKeysSerializer implements IVersionedWithKeysSerializer<Seekables<?, ?>, D>
 {
-    public static final DepsSerializer<Deps> deps = new DepsSerializer<Deps>()
+    public static final DepsSerializer<Deps> deps = new DepsSerializer<>()
     {
         @Override
         Deps deserialize(KeyDeps keyDeps, RangeDeps rangeDeps, KeyDeps directKeyDeps, DataInputPlus in, int version)
@@ -56,7 +56,7 @@ public abstract class DepsSerializer<D extends Deps> extends IVersionedWithKeysS
     };
     public static final IVersionedSerializer<Deps> nullableDeps = NullableSerializer.wrap(deps);
 
-    public static final DepsSerializer<PartialDeps> partialDeps = new DepsSerializer<PartialDeps>()
+    public static final DepsSerializer<PartialDeps> partialDeps = new DepsSerializer<>()
     {
         @Override
         PartialDeps deserialize(KeyDeps keyDeps, RangeDeps rangeDeps, KeyDeps directKeyDeps, DataInputPlus in, int version) throws IOException
@@ -73,9 +73,9 @@ public abstract class DepsSerializer<D extends Deps> extends IVersionedWithKeysS
         }
 
         @Override
-        public void serialize(Seekables<?, ?> keys, PartialDeps partialDeps, DataOutputPlus out, int version) throws IOException
+        public void serialize(Seekables<?, ?> superset, PartialDeps partialDeps, DataOutputPlus out, int version) throws IOException
         {
-            super.serialize(keys, partialDeps, out, version);
+            super.serialize(superset, partialDeps, out, version);
             KeySerializers.ranges.serialize(partialDeps.covering, out, version);
         }
 
@@ -106,9 +106,9 @@ public abstract class DepsSerializer<D extends Deps> extends IVersionedWithKeysS
     }
 
     @Override
-    public void serialize(Seekables<?, ?> keys, D deps, DataOutputPlus out, int version) throws IOException
+    public void serialize(Seekables<?, ?> superset, D deps, DataOutputPlus out, int version) throws IOException
     {
-        if (keys.domain() == Key) serializeSubset(deps.keyDeps.keys(), keys, out);
+        if (superset.domain() == Key) serializeSubset(deps.keyDeps.keys(), superset, out);
         else KeySerializers.keys.serialize(deps.keyDeps.keys(), out, version);
         serializeWithoutKeys(deps, out, version);
     }
@@ -171,7 +171,7 @@ public abstract class DepsSerializer<D extends Deps> extends IVersionedWithKeysS
 
         {
             Keys keys = deps.directKeyDeps.keys();
-            boolean isSubset = isSubset(keys, deps.directKeyDeps.keys());
+            boolean isSubset = isSubset(keys, deps.keyDeps.keys());
             out.writeBoolean(isSubset);
             if (isSubset) serializeSubset(keys, deps.keyDeps.keys(), out);
             else KeySerializers.keys.serialize(keys, out, version);

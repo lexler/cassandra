@@ -68,28 +68,28 @@ public abstract class DepsSerializer<D extends Deps> extends IVersionedWithKeysS
         public void serialize(PartialDeps partialDeps, DataOutputPlus out, int version) throws IOException
         {
             super.serialize(partialDeps, out, version);
-            KeySerializers.ranges.serialize(partialDeps.covering, out, version);
+            KeySerializers.participants.serialize(partialDeps.covering, out, version);
         }
 
         @Override
         public void serialize(Seekables<?, ?> superset, PartialDeps partialDeps, DataOutputPlus out, int version) throws IOException
         {
             super.serialize(superset, partialDeps, out, version);
-            KeySerializers.ranges.serialize(partialDeps.covering, out, version);
+            KeySerializers.participants.serialize(partialDeps.covering, out, version);
         }
 
         @Override
         public long serializedSize(PartialDeps partialDeps, int version)
         {
             return super.serializedSize(partialDeps, version)
-                 + KeySerializers.ranges.serializedSize(partialDeps.covering, version);
+                 + KeySerializers.participants.serializedSize(partialDeps.covering, version);
         }
 
         @Override
         public long serializedSize(Seekables<?, ?> keys, PartialDeps partialDeps, int version)
         {
             return super.serializedSize(keys, partialDeps, version)
-                 + KeySerializers.ranges.serializedSize(partialDeps.covering, version);
+                 + KeySerializers.participants.serializedSize(partialDeps.covering, version);
         }
     };
 

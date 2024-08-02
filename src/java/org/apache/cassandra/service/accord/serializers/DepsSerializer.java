@@ -21,7 +21,6 @@ import java.io.IOException;
 
 import com.google.common.primitives.Ints;
 
-import accord.api.Key;
 import accord.primitives.Deps;
 import accord.primitives.KeyDeps;
 import accord.primitives.Keys;

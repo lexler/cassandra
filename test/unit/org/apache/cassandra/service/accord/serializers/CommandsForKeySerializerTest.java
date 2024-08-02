@@ -39,11 +39,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import accord.api.Key;
-import accord.local.CommandsForKey;
-import accord.local.CommandsForKey.InternalStatus;
+import accord.local.cfk.CommandsForKey;
+import accord.local.cfk.CommandsForKey.InternalStatus;
 import accord.local.Command;
-import accord.local.CommandsForKey.TxnInfo;
-import accord.local.CommandsForKey.Unmanaged;
+import accord.local.cfk.CommandsForKey.TxnInfo;
+import accord.local.cfk.CommandsForKey.Unmanaged;
 import accord.local.CommonAttributes;
 import accord.local.CommonAttributes.Mutable;
 import accord.local.Listeners;

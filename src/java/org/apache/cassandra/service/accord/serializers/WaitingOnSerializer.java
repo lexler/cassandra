@@ -31,8 +31,6 @@ import accord.utils.ImmutableBitSet;
 import accord.utils.Invariants;
 import accord.utils.SimpleBitSet;
 import org.apache.cassandra.db.TypeSizes;
-import org.apache.cassandra.io.util.DataInputPlus;
-import org.apache.cassandra.io.util.DataOutputPlus;
 import org.apache.cassandra.utils.vint.VIntCoding;
 
 public class WaitingOnSerializer

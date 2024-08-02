@@ -34,7 +34,7 @@ import accord.api.Result;
 import accord.impl.TimestampsForKey;
 import accord.impl.TimestampsForKeys;
 import accord.local.Command;
-import accord.local.CommandsForKey;
+import accord.local.cfk.CommandsForKey;
 import accord.local.CommonAttributes;
 import accord.local.SaveStatus;
 import accord.primitives.Ballot;

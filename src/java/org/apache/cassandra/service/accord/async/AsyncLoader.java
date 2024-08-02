@@ -18,7 +18,7 @@
 package org.apache.cassandra.service.accord.async;
 
 import accord.api.Key;
-import accord.local.CommandsForKey;
+import accord.local.cfk.CommandsForKey;
 import accord.local.KeyHistory;
 import accord.local.PreLoadContext;
 import accord.primitives.*;

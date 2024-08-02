@@ -24,11 +24,11 @@ import java.util.Arrays;
 import com.google.common.primitives.Ints;
 
 import accord.api.Key;
-import accord.local.CommandsForKey;
-import accord.local.CommandsForKey.TxnInfo;
-import accord.local.CommandsForKey.InternalStatus;
-import accord.local.CommandsForKey.TxnInfoExtra;
-import accord.local.CommandsForKey.Unmanaged;
+import accord.local.cfk.CommandsForKey;
+import accord.local.cfk.CommandsForKey.TxnInfo;
+import accord.local.cfk.CommandsForKey.InternalStatus;
+import accord.local.cfk.CommandsForKey.TxnInfoExtra;
+import accord.local.cfk.CommandsForKey.Unmanaged;
 import accord.local.Node;
 import accord.primitives.Ballot;
 import accord.primitives.Routable.Domain;
@@ -40,8 +40,8 @@ import org.apache.cassandra.db.TypeSizes;
 import org.apache.cassandra.db.marshal.ByteBufferAccessor;
 import org.apache.cassandra.utils.vint.VIntCoding;
 
-import static accord.local.CommandsForKey.NO_PENDING_UNMANAGED;
-import static accord.local.CommandsForKey.NO_TXNIDS;
+import static accord.local.cfk.CommandsForKey.NO_PENDING_UNMANAGED;
+import static accord.local.cfk.CommandsForKey.NO_TXNIDS;
 import static accord.primitives.Txn.Kind.Read;
 import static accord.primitives.Txn.Kind.SyncPoint;
 import static accord.primitives.Txn.Kind.Write;

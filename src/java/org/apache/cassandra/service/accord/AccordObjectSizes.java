@@ -24,12 +24,12 @@ import java.util.function.ToLongFunction;
 import accord.api.Key;
 import accord.api.Result;
 import accord.api.RoutingKey;
-import accord.local.CommandsForKey;
-import accord.local.CommandsForKey.TxnInfo;
+import accord.local.cfk.CommandsForKey;
+import accord.local.cfk.CommandsForKey.TxnInfo;
 import accord.impl.TimestampsForKey;
 import accord.local.Command;
 import accord.local.Command.WaitingOn;
-import accord.local.CommandsForKey.TxnInfoExtra;
+import accord.local.cfk.CommandsForKey.TxnInfoExtra;
 import accord.local.CommonAttributes;
 import accord.local.Node;
 import accord.local.SaveStatus;
@@ -69,7 +69,7 @@ import org.apache.cassandra.service.accord.txn.TxnResult;
 import org.apache.cassandra.service.accord.txn.TxnWrite;
 import org.apache.cassandra.utils.ObjectSizes;
 
-import static accord.local.CommandsForKey.NO_TXNIDS;
+import static accord.local.cfk.CommandsForKey.NO_TXNIDS;
 import static org.apache.cassandra.utils.ObjectSizes.measure;
 
 public class AccordObjectSizes

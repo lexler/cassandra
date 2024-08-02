@@ -28,7 +28,7 @@ import accord.api.DataStore;
 import accord.api.Key;
 import accord.api.ProgressLog;
 import accord.impl.AbstractSafeCommandStore;
-import accord.local.CommandsForKey;
+import accord.local.cfk.CommandsForKey;
 import accord.impl.CommandsSummary;
 import accord.local.CommandStores.RangesForEpoch;
 import accord.local.NodeTimeService;

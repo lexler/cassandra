@@ -415,7 +415,7 @@ public class CompactionAccordIteratorsTest
         Int2ObjectHashMap<RedundantBefore> redundantBefores = new Int2ObjectHashMap<>();
         if (redundantBefore != null)
             redundantBefores.put(commandStore.id(), redundantBefore);
-        when(mockAccordService.getRedundantBeforesAndDurableBefore()).thenReturn(Pair.create(redundantBefores, durableBefore));
+        when(mockAccordService.getCompactionInfo()).thenReturn(Pair.create(redundantBefores, durableBefore));
         return mockAccordService;
     }
 
@@ -556,7 +556,7 @@ public class CompactionAccordIteratorsTest
                 scanners.add(random.nextInt(scanners.size()), new Scanner(cfs.metadata(), outputPartitions.stream().map(Partition::unfilteredIterator).collect(Collectors.toList())));
         } while (!scanners.isEmpty());
 
-        verify(mockAccordService, times(singleCompaction || numScanners == 1 ? 1 : numScanners - 1)).getRedundantBeforesAndDurableBefore();
+        verify(mockAccordService, times(singleCompaction || numScanners == 1 ? 1 : numScanners - 1)).getCompactionInfo();
         return result;
     }
 }

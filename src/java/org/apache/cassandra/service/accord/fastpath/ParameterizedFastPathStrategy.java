@@ -38,6 +38,8 @@ import accord.api.VisibleForImplementation;
 import accord.local.Node;
 import accord.topology.Shard;
 import accord.utils.Invariants;
+import accord.utils.SortedArrays;
+import accord.utils.SortedArrays.SortedArrayList;
 import org.apache.cassandra.db.TypeSizes;
 import org.apache.cassandra.exceptions.ConfigurationException;
 import org.apache.cassandra.io.util.DataInputPlus;
@@ -204,7 +206,7 @@ public class ParameterizedFastPathStrategy implements FastPathStrategy
     }
 
     @Override
-    public Set<Node.Id> calculateFastPath(List<Node.Id> nodes, Set<Node.Id> unavailable, Map<Node.Id, String> dcMap)
+    public SortedArrayList<Node.Id> calculateFastPath(SortedArrayList<Node.Id> nodes, Set<Node.Id> unavailable, Map<Node.Id, String> dcMap)
     {
         List<NodeSorter> sorters = new ArrayList<>(nodes.size());
 
@@ -221,12 +223,11 @@ public class ParameterizedFastPathStrategy implements FastPathStrategy
 
         int slowQuorum = Shard.slowPathQuorumSize(nodes.size());
         int fpSize = Math.max(size, slowQuorum);
-        ImmutableSet.Builder<Node.Id> builder = ImmutableSet.builder();
-
+        Node.Id[] array = new Node.Id[fpSize];
         for (int i=0; i<fpSize; i++)
-            builder.add(sorters.get(i).id);
+            array[i] = sorters.get(i).id;
 
-        ImmutableSet<Node.Id> fastPath = builder.build();
+        SortedArrayList<Node.Id> fastPath = new SortedArrayList<>(array);
         Invariants.checkState(fastPath.size() >= slowQuorum);
         return fastPath;
     }

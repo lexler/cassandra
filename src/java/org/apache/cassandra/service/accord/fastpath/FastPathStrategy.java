@@ -29,6 +29,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import accord.local.Node;
+import accord.utils.SortedArrays;
+import accord.utils.SortedArrays.SortedArrayList;
 import org.apache.cassandra.db.TypeSizes;
 import org.apache.cassandra.exceptions.ConfigurationException;
 import org.apache.cassandra.io.util.DataInputPlus;
@@ -83,7 +85,7 @@ public interface FastPathStrategy
      * @param dcMap
      * @return
      */
-    Set<Node.Id> calculateFastPath(List<Node.Id> nodes, Set<Node.Id> unavailable, Map<Node.Id, String> dcMap);
+    SortedArrayList<Node.Id> calculateFastPath(SortedArrayList<Node.Id> nodes, Set<Node.Id> unavailable, Map<Node.Id, String> dcMap);
 
     Kind kind();
 

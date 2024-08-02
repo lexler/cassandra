@@ -34,6 +34,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import accord.utils.SortedArrays;
+import accord.utils.SortedArrays.SortedArrayList;
 import org.apache.cassandra.ServerTestUtils;
 import org.apache.cassandra.config.DatabaseDescriptor;
 import org.apache.cassandra.io.util.File;
@@ -480,9 +483,9 @@ public class AccordTestUtils
         return new Node.Id(id);
     }
 
-    public static List<Node.Id> idList(int... ids)
+    public static SortedArrayList<Id> idList(int... ids)
     {
-        return Arrays.stream(ids).mapToObj(AccordTestUtils::id).collect(Collectors.toList());
+        return new SortedArrayList<>(Arrays.stream(ids).mapToObj(AccordTestUtils::id).toArray(Id[]::new));
     }
 
     public static Set<Id> idSet(int... ids)

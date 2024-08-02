@@ -25,6 +25,8 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import accord.local.Node;
+import accord.utils.SortedArrays;
+import accord.utils.SortedArrays.SortedArrayList;
 
 public class InheritKeyspaceFastPathStrategy implements FastPathStrategy
 {
@@ -35,7 +37,7 @@ public class InheritKeyspaceFastPathStrategy implements FastPathStrategy
     private InheritKeyspaceFastPathStrategy() {}
 
     @Override
-    public Set<Node.Id> calculateFastPath(List<Node.Id> nodes, Set<Node.Id> unavailable, Map<Node.Id, String> dcMap)
+    public SortedArrayList<Node.Id> calculateFastPath(SortedArrayList<Node.Id> nodes, Set<Node.Id> unavailable, Map<Node.Id, String> dcMap)
     {
         throw new IllegalStateException("InheritKeyspaceFastPathStrategy should be replaced before calculateFastPath is called");
     }

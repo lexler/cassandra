@@ -20,7 +20,7 @@ package org.apache.cassandra.service.accord.serializers;
 
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import accord.primitives.Deps;
 import org.apache.cassandra.config.DatabaseDescriptor;

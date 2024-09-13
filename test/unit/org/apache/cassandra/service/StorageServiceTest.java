@@ -18,6 +18,7 @@
 
 package org.apache.cassandra.service;
 
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,7 +29,11 @@ import org.junit.Test;
 import org.apache.cassandra.ServerTestUtils;
 import org.apache.cassandra.concurrent.ScheduledExecutors;
 import org.apache.cassandra.config.DatabaseDescriptor;
+import org.apache.cassandra.db.Keyspace;
 import org.apache.cassandra.db.commitlog.CommitLog;
+import org.apache.cassandra.dht.LocalPartitioner;
+import org.apache.cassandra.dht.Range;
+import org.apache.cassandra.dht.Token;
 import org.apache.cassandra.distributed.test.TestBaseImpl;
 import org.apache.cassandra.locator.AbstractEndpointSnitch;
 import org.apache.cassandra.locator.IEndpointSnitch;
@@ -37,6 +42,8 @@ import org.apache.cassandra.locator.Replica;
 import org.apache.cassandra.locator.ReplicaCollection;
 import org.apache.cassandra.locator.ReplicaMultimap;
 import org.apache.cassandra.locator.SimpleSnitch;
+import org.apache.cassandra.schema.Schema;
+import org.apache.cassandra.tcm.ClusterMetadata;
 import org.apache.cassandra.tcm.ClusterMetadataService;
 import org.apache.cassandra.tcm.membership.Location;
 import org.apache.cassandra.tcm.membership.NodeAddresses;
@@ -315,5 +322,20 @@ public class StorageServiceTest extends TestBaseImpl
         {
             assertEquals("Cannot specify tokens without keyspace.", ex.getMessage());
         }
+    }
+
+    @Test
+    public void testGetSplits() // FIXME name
+    {
+        StorageService instance = StorageService.instance;
+        Keyspace keyspace = Keyspace.open("system");
+
+        ClusterMetadata metadata = ClusterMetadata.current();
+        List<Token> sortedTokens = metadata.tokenMap.tokens();
+        // TODO: need a valid range
+        Range<Token> range = new Range<>(sortedTokens.get(0), sortedTokens.get(0));
+
+        instance.getSplits("system", "compaction_history", range, 0);
+
     }
 }
